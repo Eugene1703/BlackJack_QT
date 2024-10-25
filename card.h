@@ -27,6 +27,8 @@ public:
     QString cardToString();
     QString suitToString();
     QString rankToString();
+    int rankToInt();
+    Rank getMyRank() const;
 };
 
 #endif // CARD_H

@@ -5,6 +5,7 @@
 #include <card.h>
 #include <QVector>
 #include <algorithm>
+#include <QRandomGenerator>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -28,13 +29,14 @@ private:
 
     Ui::MainWindow *ui;
     QVector<Card> deck;
+    QRandomGenerator *generator;
+    int score=0;
 
-    void dealCards();
-    void flipCards();
+    void dealCard();
+    void flipCard();
     void generateDeck(QVector<Card> &deck);
     void shuffleDeck(QVector<Card> &deck);
     Card getCardFromDeck(QVector<Card> &deck);
     void startGame();
-
 };
 #endif // MAINWINDOW_H

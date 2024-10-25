@@ -19,15 +19,21 @@ MainWindow::~MainWindow()
 void MainWindow::on_hitPushButton_clicked()
 {
 
-    Card card = getCardFromDeck(deck);
 
-    qDebug() << card.cardToString();
 }
 
 
 void MainWindow::on_standPushButton_clicked()
 {
 
+}
+
+void MainWindow::dealCard()
+{
+    Card card = getCardFromDeck(deck);
+    score+=card.getMyRank();
+    qDebug() << std::to_string(score);
+    qDebug() << card.cardToString();
 }
 
 void MainWindow::generateDeck(QVector<Card> &deck)
@@ -45,18 +51,30 @@ void MainWindow::generateDeck(QVector<Card> &deck)
 
 void MainWindow::shuffleDeck(QVector<Card> &deck)
 {
-    std::random_shuffle(deck.begin(),deck.end());
+    generator = QRandomGenerator::global();
+    std::shuffle(deck.begin(),deck.end(),*generator);
 }
 
 Card MainWindow::getCardFromDeck(QVector<Card> &deck)
 {
-    Card card = deck.last();
-    deck.removeLast();
-    return card;
+    if(!deck.isEmpty())
+    {
+        Card card = deck.last();
+        deck.removeLast();
+        return card;
+    }
+
 }
 
 void MainWindow::startGame()
 {
+
     generateDeck(deck);
     shuffleDeck(deck);
+    for (int i=0;i<2;i++)
+    {
+        dealCard();
+    }
+
+
 }

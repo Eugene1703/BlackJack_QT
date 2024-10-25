@@ -1,6 +1,12 @@
 #include "card.h"
 
 // Card::Card(Rank rank, Suit suit) {}
+Rank Card::getMyRank() const
+{
+    return myRank;
+}
+
+
 Card::Card(){}
 QString Card::cardToString()
 {
@@ -26,6 +32,11 @@ QString Card::rankToString()
     case Ace : return "a";
     default: return "Something went wrong";
     }
+}
+
+int Card::rankToInt()
+{
+
 }
 
 QString Card::suitToString()
