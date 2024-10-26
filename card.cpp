@@ -1,19 +1,24 @@
 #include "card.h"
 
-// Card::Card(Rank rank, Suit suit) {}
 Rank Card::getMyRank() const
 {
     return myRank;
+
+}
+
+void Card::flip()
+{
+    isFaceUp=!isFaceUp;
 }
 
 
 Card::Card(){}
-QString Card::cardToString()
+QString Card::cardToString() const
 {
     return suitToString()+ "_" + rankToString();
 }
 
-QString Card::rankToString()
+QString Card::rankToString() const
 {
     switch (myRank)
     {
@@ -34,12 +39,8 @@ QString Card::rankToString()
     }
 }
 
-int Card::rankToInt()
-{
 
-}
-
-QString Card::suitToString()
+QString Card::suitToString() const
 {
     switch (mySuit)
     {

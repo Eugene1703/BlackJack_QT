@@ -21,14 +21,14 @@ class Card
 public:
     Rank myRank;
     Suit mySuit;
-    bool isFaceUp=false;
+    bool isFaceUp=true;
     Card(Rank rank, Suit suit) : myRank(rank), mySuit(suit) {}
     Card();
-    QString cardToString();
-    QString suitToString();
-    QString rankToString();
-    int rankToInt();
+    QString cardToString() const;
+    QString suitToString() const;
+    QString rankToString() const;
     Rank getMyRank() const;
+    void flip();
 };
 
 #endif // CARD_H

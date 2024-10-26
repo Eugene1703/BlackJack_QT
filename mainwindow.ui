@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="hitPushButton">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>550</y>
+      <x>190</x>
+      <y>480</y>
       <width>101</width>
       <height>24</height>
      </rect>
@@ -30,14 +30,54 @@
    <widget class="QPushButton" name="standPushButton">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>550</y>
+      <x>400</x>
+      <y>480</y>
       <width>75</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
      <string>Stand</string>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="playerListWidget">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>40</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="dealerListWidget">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>40</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="playerTextEdit">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>240</y>
+      <width>104</width>
+      <height>71</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="dealerTextEdit">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>240</y>
+      <width>104</width>
+      <height>71</height>
+     </rect>
     </property>
    </widget>
   </widget>

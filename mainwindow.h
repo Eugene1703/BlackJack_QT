@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <card.h>
 #include <QVector>
-#include <algorithm>
 #include <QRandomGenerator>
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,14 +28,22 @@ private:
 
     Ui::MainWindow *ui;
     QVector<Card> deck;
+    QVector<Card> playerCards;
+    QVector<Card> dealerCards;
     QRandomGenerator *generator;
-    int score=0;
-
-    void dealCard();
-    void flipCard();
+    const QString ace = "Ace";
+    int playerScore=0, dealerScore=0;
+    bool isPlayer=true;
+    void dealCard(bool isPlayer);
     void generateDeck(QVector<Card> &deck);
     void shuffleDeck(QVector<Card> &deck);
+    void printCards();
+    bool isPlayerWin();
     Card getCardFromDeck(QVector<Card> &deck);
+    int addScore(Card card, int score);
     void startGame();
+    void updatePlayerDealerScore();
+    int countScore();
+
 };
 #endif // MAINWINDOW_H
