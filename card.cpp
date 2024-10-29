@@ -1,9 +1,19 @@
 #include "card.h"
 
-Rank Card::getMyRank() const
+int Card::getMyRank() const
 {
-    return myRank;
-
+    if(isFaceUp)
+    {
+    if (myRank == Jack || myRank == Queen || myRank == King)
+    {
+        return 10;
+    }
+    else
+    {
+        return myRank;
+    }
+    }
+    else return 0;
 }
 
 void Card::flip()

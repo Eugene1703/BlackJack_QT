@@ -6,7 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    startGame();
+    updateBet();
+    updateBalance();
 }
 
 
@@ -18,144 +19,173 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_hitPushButton_clicked()
 {
-    dealCard(isPlayer);
-    ui->playerListWidget->addItem(playerCards.last().cardToString());
-    playerScore=addScore(playerCards.last(),playerScore);
+    game.hit();
+    ui->playerListWidget->addItem(game.player.getLastCard().cardToString());
     updatePlayerDealerScore();
+    if(game.player.getScore()>game.scoreLimit)
+    {
+
+            QMessageBox::StandardButton reply;
+            QMessageBox::information(this,"Information" , "You lose. Another one?", QMessageBox::Ok, QMessageBox::Cancel);
+            if(reply = QMessageBox::Ok )
+            {
+                game.start();
+                updatePlayerDealerScore();
+                qDebug() << "Player cards count:" << game.player.getCards().size();
+                qDebug() << "Dealer cards count:" << game.dealer.getCards().size();
+                updateUI();
+                printCards();
+            }
+    }
+
 }
 
 void MainWindow::on_standPushButton_clicked()
 {
-    dealerCards.last().flip();
-    ui->dealerListWidget->addItem(dealerCards.last().cardToString());
-    dealerScore=addScore(dealerCards.last(),dealerScore);
+    game.stand();
+    ui->dealerListWidget->addItem(game.dealer.getLastCard().cardToString());
     updatePlayerDealerScore();
-    if(isPlayerWin())
+    bool isPlayerWin = game.checkWinner();
+    if(isPlayerWin)
     {
-        qDebug() << "Player win";
-    }
-    else qDebug() << "Player lose";
-}
+        game.addWinnings();
+        QMessageBox::StandardButton reply;
+        QMessageBox::information(this,"Information" , "You win. Another one?", QMessageBox::Ok, QMessageBox::Cancel);
+        if(reply = QMessageBox::Ok )
+        {
+            game.start();
+            updatePlayerDealerScore();
+            qDebug() << "Player cards count:" << game.player.getCards().size();
+            qDebug() << "Dealer cards count:" << game.dealer.getCards().size();
+            updateUI();
+            printCards();
+        }
 
-void MainWindow::dealCard(bool isPlayer)
-{
-    Card card = getCardFromDeck(deck);
-    if(isPlayer)
-    {
-        playerCards.push_back(card);
     }
     else
     {
-        dealerCards.push_back(card);
-    }
-}
-
-void MainWindow::generateDeck(QVector<Card> &deck)
-{
-    deck.clear();
-    for(int suit=Hearts;suit<=Spades;suit++)
-    {
-        for(int rank=Two;rank<=King;rank++)
+        QMessageBox::StandardButton reply;
+        QMessageBox::information(this,"Information" , "You lose. Another one?", QMessageBox::Ok, QMessageBox::Cancel);
+        if(reply = QMessageBox::Ok )
         {
-            Card card(static_cast<Rank>(rank), static_cast<Suit>(suit));
-            deck.push_back(card);
+            game.start();
         }
     }
 }
 
-void MainWindow::shuffleDeck(QVector<Card> &deck)
-{
-    generator = QRandomGenerator::global();
-    std::shuffle(deck.begin(),deck.end(),*generator);
-}
-
 void MainWindow::printCards()
 {
-    foreach (const Card &card, playerCards)
+    foreach (const Card &card, game.player.getCards())
     {
         ui->playerListWidget->addItem(card.cardToString());
     }
-    foreach (const Card &card, dealerCards)
+    foreach (const Card &card, game.dealer.getCards())
     {
         if(card.isFaceUp)
         {
         ui->dealerListWidget->addItem(card.cardToString());
         }
     }
-    countScore();
-    updatePlayerDealerScore();
-}
-
-bool MainWindow::isPlayerWin()
-{
-
-    if (playerScore>21) return false;
-    else if (playerScore>=dealerScore) return true;
-}
-
-Card MainWindow::getCardFromDeck(QVector<Card> &deck)
-{
-    if(!deck.isEmpty())
-    {
-        Card card = deck.last();
-        deck.removeLast();
-        return card;
-    }
-
-}
-
-int MainWindow::addScore(Card card, int score)
-{
-    if(card.isFaceUp)
-    {
-    if(card.suitToString()==ace)
-    {
-        if(score <=10)
-        {
-            score+=11;
-        }
-        else score+=1;
-    }
-    else score+=card.getMyRank();
-    }
-    return score;
-}
-
-void MainWindow::startGame()
-{
-
-    playerScore=0;
-    dealerScore=0;
-    updatePlayerDealerScore();
-    playerCards.clear();
-    dealerCards.clear();
-    generateDeck(deck);
-    shuffleDeck(deck);
-    for (int i=0;i<2;i++)
-    {
-        dealCard(isPlayer);
-        dealCard(!isPlayer);
-    }
-    dealerCards.last().flip();
-    printCards();
-
 }
 
 void MainWindow::updatePlayerDealerScore()
 {
-    ui->playerTextEdit->setText(QString::number(playerScore));
-    ui->dealerTextEdit->setText(QString::number(dealerScore));
+    game.player.updateScore();
+    game.dealer.updateScore();
+    ui->playerTextEdit->setText(QString::number(game.player.getScore()));
+    ui->dealerTextEdit->setText(QString::number(game.dealer.getScore()));
 }
 
-int MainWindow::countScore()
+
+void MainWindow::updateBet()
 {
-    foreach (const Card &card, playerCards)
+    ui->betTextEdit->setText(QString::number(game.bet,'f',1));
+}
+
+void MainWindow::updateBalance()
+{
+    ui->balanceTextEdit->setText(QString::number(game.balance));
+}
+
+void MainWindow::updateUI()
+{
+    updateBet();
+    updateBalance();
+    ui->dealerListWidget->clear();
+    ui->playerListWidget->clear();
+}
+
+void MainWindow::on_increasBetPushButton_clicked()
+{
+    float bet = game.bet;
+    if (bet >= game.maxBet)
     {
-        playerScore=addScore(card,playerScore);
+        bet = game.maxBet;
+        QMessageBox::information(this, "Information", "Max bet = " + QString::number(game.maxBet,'f',1), QMessageBox::Ok);
     }
-    foreach (const Card &card, dealerCards)
+    else
     {
-        dealerScore=addScore(card,dealerScore);
+        bet += game.betStep;
+
+        bet = std::round(bet * 10) / 10.0;
+
+        if (bet > game.maxBet)
+        {
+            bet = game.maxBet;
+        }
     }
+    game.updateBet(bet);
+    updateBet();
+
+}
+
+void MainWindow::on_decreaseBetPushButton_clicked()
+{
+    float bet=game.bet;
+    if (bet <= game.minBet)
+    {
+        bet = game.minBet;
+        QMessageBox::information(this, "Information", "Min bet = " + QString::number(game.minBet,'f',1), QMessageBox::Ok);
+    }
+    else
+    {
+        bet -= game.betStep;
+
+        bet = std::round(bet * 10) / 10.0;
+
+        if (bet < game.minBet)
+        {
+            bet = game.minBet;
+        }
+    }
+    game.updateBet(bet);
+    updateBet();
+}
+
+
+void MainWindow::on_betInsertLineEdit_editingFinished()
+{
+    bool convertResult;
+    float bet=ui->betInsertLineEdit->text().toFloat(&convertResult);
+    if(!convertResult || bet>10 || bet<0.1)
+    {
+        QMessageBox::warning(this, "Information", "Enter bet from " + QString::number(game.minBet,'f',1) + " to " + QString::number(game.maxBet,'f',1) , QMessageBox::Ok);
+    }
+    else
+    {
+        game.updateBet(bet);
+        updateBet();
+    }
+}
+
+
+void MainWindow::on_playPushButton_clicked()
+{
+    game.start();
+    updatePlayerDealerScore();
+    qDebug() << "Player cards count:" << game.player.getCards().size();
+    qDebug() << "Dealer cards count:" << game.dealer.getCards().size();
+    updateUI();
+    printCards();
 }
 

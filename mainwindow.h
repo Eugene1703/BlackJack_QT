@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <card.h>
-#include <QVector>
+#include <game.h>
 #include <QRandomGenerator>
+#include <QMessageBox>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -24,26 +24,28 @@ private slots:
 
     void on_standPushButton_clicked();
 
+    void on_increasBetPushButton_clicked();
+
+    void on_decreaseBetPushButton_clicked();
+
+    void on_betInsertLineEdit_editingFinished();
+
+    void on_playPushButton_clicked();
+
 private:
 
     Ui::MainWindow *ui;
-    QVector<Card> deck;
-    QVector<Card> playerCards;
-    QVector<Card> dealerCards;
-    QRandomGenerator *generator;
-    const QString ace = "Ace";
-    int playerScore=0, dealerScore=0;
-    bool isPlayer=true;
-    void dealCard(bool isPlayer);
-    void generateDeck(QVector<Card> &deck);
-    void shuffleDeck(QVector<Card> &deck);
-    void printCards();
-    bool isPlayerWin();
-    Card getCardFromDeck(QVector<Card> &deck);
-    int addScore(Card card, int score);
-    void startGame();
+    Game game;
+
+    void updateUI();
+    void resetGame();
     void updatePlayerDealerScore();
-    int countScore();
+    void printCards();
+    void updateBet();
+    void updateBalance();
+
+
+
 
 };
 #endif // MAINWINDOW_H

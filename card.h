@@ -13,7 +13,7 @@ enum Suit
 enum Rank
 {
     Two = 2, Three, Four, Five, Six, Seven, Eight, Nine, Ten,
-    Ace, Jack, Queen, King
+    Ace, Jack, Queen,King
 };
 
 class Card
@@ -27,7 +27,7 @@ public:
     QString cardToString() const;
     QString suitToString() const;
     QString rankToString() const;
-    Rank getMyRank() const;
+    int getMyRank() const;
     void flip();
 };
 

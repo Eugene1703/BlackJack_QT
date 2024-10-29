@@ -10,12 +10,18 @@ CONFIG += c++17
 
 SOURCES += \
     card.cpp \
+    deck.cpp \
+    game.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    player.cpp
 
 HEADERS += \
     card.h \
-    mainwindow.h
+    deck.h \
+    game.h \
+    mainwindow.h \
+    player.h
 
 FORMS += \
     mainwindow.ui
