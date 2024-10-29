@@ -2,6 +2,7 @@
 #define PLAYER_H
 #include <card.h>
 #include <QVector>
+#include<QPoint>
 class Player
 {
 public:
@@ -14,6 +15,9 @@ public:
     Card& getLastCard();
     QVector<Card> getCards() const;
     const QString ace = "a";
+    QPoint startPos;
+    const QPoint &getStartPos() const;
+
 private:
     QVector<Card> cards;
     int score;

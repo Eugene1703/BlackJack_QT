@@ -21,6 +21,10 @@ void Card::flip()
     isFaceUp=!isFaceUp;
 }
 
+void Card::setImageFolderPath(const QString &newImageFolderPath)
+{
+    imageFolderPath = newImageFolderPath;
+}
 
 Card::Card(){}
 QString Card::cardToString() const

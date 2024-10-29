@@ -5,7 +5,13 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
+
+    ui->hitPushButton->setVisible(false);
+    ui->standPushButton->setVisible(false);
+    ui->playerTextEdit->setVisible(false);
+    ui->dealerTextEdit->setVisible(false);
     updateBet();
     updateBalance();
 }
@@ -20,22 +26,15 @@ MainWindow::~MainWindow()
 void MainWindow::on_hitPushButton_clicked()
 {
     game.hit();
-    ui->playerListWidget->addItem(game.player.getLastCard().cardToString());
+    printCards();
     updatePlayerDealerScore();
     if(game.player.getScore()>game.scoreLimit)
     {
 
-            QMessageBox::StandardButton reply;
-            QMessageBox::information(this,"Information" , "You lose. Another one?", QMessageBox::Ok, QMessageBox::Cancel);
-            if(reply = QMessageBox::Ok )
-            {
-                game.start();
-                updatePlayerDealerScore();
-                qDebug() << "Player cards count:" << game.player.getCards().size();
-                qDebug() << "Dealer cards count:" << game.dealer.getCards().size();
-                updateUI();
-                printCards();
-            }
+            QMessageBox::information(this,"Information" , "You lose.");
+            setUiVisible();
+            updateUI();
+
     }
 
 }
@@ -43,50 +42,127 @@ void MainWindow::on_hitPushButton_clicked()
 void MainWindow::on_standPushButton_clicked()
 {
     game.stand();
-    ui->dealerListWidget->addItem(game.dealer.getLastCard().cardToString());
+    Card card = game.dealer.getLastCard();
+    card.flip();
+    printCards();
     updatePlayerDealerScore();
     bool isPlayerWin = game.checkWinner();
     if(isPlayerWin)
     {
         game.addWinnings();
-        QMessageBox::StandardButton reply;
-        QMessageBox::information(this,"Information" , "You win. Another one?", QMessageBox::Ok, QMessageBox::Cancel);
-        if(reply = QMessageBox::Ok )
-        {
-            game.start();
-            updatePlayerDealerScore();
-            qDebug() << "Player cards count:" << game.player.getCards().size();
-            qDebug() << "Dealer cards count:" << game.dealer.getCards().size();
-            updateUI();
-            printCards();
-        }
-
+        QMessageBox::information(this,"Information" , "You win.");
     }
     else
     {
-        QMessageBox::StandardButton reply;
-        QMessageBox::information(this,"Information" , "You lose. Another one?", QMessageBox::Ok, QMessageBox::Cancel);
-        if(reply = QMessageBox::Ok )
-        {
-            game.start();
-        }
+        QMessageBox::information(this,"Information" , "You lose.");
     }
+    setUiVisible();
+    updateUI();
 }
 
 void MainWindow::printCards()
 {
+    clearLayout(ui->playerCardsLayout);
+    clearLayout(ui->dealerCardsLayout);
+    QPoint startPos = game.player.getStartPos();
+    QPoint endPos = startPos + QPoint(140,0);
+    QParallelAnimationGroup* group = new QParallelAnimationGroup(this);
     foreach (const Card &card, game.player.getCards())
     {
-        ui->playerListWidget->addItem(card.cardToString());
+
+        group->addAnimation(addCardToLayout(ui->playerCardsLayout,card,startPos, endPos));
+        endPos+= QPoint(40,0);
     }
+    endPos = startPos + QPoint(140,0);
     foreach (const Card &card, game.dealer.getCards())
     {
-        if(card.isFaceUp)
+        group->addAnimation(addCardToLayout(ui->dealerCardsLayout, card,startPos, endPos));
+        endPos+= QPoint(40,0);
+    }
+    group->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+QPropertyAnimation* MainWindow::addCardToLayout(QLayout *layout, Card card, QPoint &startPos, QPoint &endPos)
+{
+    QLabel *cardLabel = new QLabel(this);
+    QString imagePath;
+
+    if(card.isFaceUp)
+    {
+    imagePath = card.imageFolderPath + card.cardToString() + ".png";
+    }
+    else
+    {
+        flipCardLabel = cardLabel;
+        imagePath = card.imageFolderPath + card.backName + ".png";
+    }
+    QPixmap pixmap(imagePath);
+    if (!pixmap.isNull())
+    {
+        cardLabel->setPixmap(pixmap);
+    } else
+    {
+        cardLabel->setText("Image not found");
+    }
+    cardLabel->setPixmap(pixmap);
+    cardLabel->setFixedSize(80, 120);
+    cardLabel->setScaledContents(true);
+    layout->addWidget(cardLabel);
+    return createCardAnim(cardLabel,startPos,endPos);
+}
+
+QPropertyAnimation* MainWindow::createCardAnim(QLabel *cardLabel, QPoint startPos, QPoint &endPos)
+{
+    QPropertyAnimation *animation = new QPropertyAnimation(cardLabel, "pos");
+    animation->setDuration(500);
+    animation->setStartValue(startPos);
+    animation->setEndValue(endPos);
+    animation->setEasingCurve(QEasingCurve::OutQuad);
+    return animation;
+}
+
+void MainWindow::setUiVisible()
+{
+
+    QVector<QWidget*> uiElements =
         {
-        ui->dealerListWidget->addItem(card.cardToString());
+            ui->hitPushButton,
+            ui->standPushButton,
+            ui->betInsertLineEdit,
+            ui->increasBetPushButton,
+            ui->decreaseBetPushButton,
+            ui->label,
+            ui->playerTextEdit,
+            ui->dealerTextEdit,
+            ui->playPushButton
+
+        };
+    foreach(QWidget* element, uiElements)
+    {
+        element->setVisible(!element->isVisible());
+    }
+
+}
+
+void MainWindow::clearLayout(QLayout *layout)
+{
+    if (layout == NULL)
+        return;
+    QLayoutItem *item;
+    while((item = layout->takeAt(0)))
+    {
+        if (item->layout())
+        {
+            clearLayout(item->layout());
+            delete item->layout();
         }
+        if (item->widget()) {
+            delete item->widget();
+        }
+        delete item;
     }
 }
+
 
 void MainWindow::updatePlayerDealerScore()
 {
@@ -111,8 +187,8 @@ void MainWindow::updateUI()
 {
     updateBet();
     updateBalance();
-    ui->dealerListWidget->clear();
-    ui->playerListWidget->clear();
+    clearLayout(ui->playerCardsLayout);
+    clearLayout(ui->dealerCardsLayout);
 }
 
 void MainWindow::on_increasBetPushButton_clicked()
@@ -181,11 +257,18 @@ void MainWindow::on_betInsertLineEdit_editingFinished()
 
 void MainWindow::on_playPushButton_clicked()
 {
-    game.start();
-    updatePlayerDealerScore();
-    qDebug() << "Player cards count:" << game.player.getCards().size();
-    qDebug() << "Dealer cards count:" << game.dealer.getCards().size();
-    updateUI();
-    printCards();
+    if(game.balance>=game.bet)
+    {
+        game.start();
+        setUiVisible();
+        updatePlayerDealerScore();
+        updateUI();
+        printCards();
+    }
+    else
+    {
+        QMessageBox::warning(this,"Information","Not enough balance");
+    }
+
 }
 

@@ -17,6 +17,8 @@ void Player::reset()
 {
     cards.clear();
     score=0;
+    startPos = QPoint(-100,0);
+
 }
 
 QVector<QString> Player::getCardsAsString() const
@@ -57,4 +59,10 @@ Card& Player::getLastCard()
 QVector<Card> Player::getCards() const
 {
     return cards;
+}
+
+
+const QPoint &Player::getStartPos() const
+{
+    return startPos;
 }

@@ -2,6 +2,7 @@
 #define GAME_H
 #include <deck.h>
 #include <player.h>
+#include <QMessageBox>
 class Game
 {
 public:

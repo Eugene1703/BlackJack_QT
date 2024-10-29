@@ -29,6 +29,9 @@ public:
     QString rankToString() const;
     int getMyRank() const;
     void flip();
+    QString imageFolderPath= "C:/Users/Eugene/Documents/QT Projects/DCTTest/Resources/";
+    QString backName = "back_red";
+    void setImageFolderPath(const QString &newImageFolderPath);
 };
 
 #endif // CARD_H

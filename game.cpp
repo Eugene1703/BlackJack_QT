@@ -1,5 +1,4 @@
 #include "game.h"
-#include "qdebug.h"
 
 Game::Game() {}
 
@@ -10,23 +9,9 @@ void Game::start()
     deck.generate();
     deck.shuffle();
     takeBet();
-
     dealCard(player);
     dealCard(player);
-
     dealCard(dealer);
-    qDebug() << dealer.getLastCard().cardToString();
-    dealCard(dealer);
-    qDebug() << dealer.getLastCard().cardToString();
-    dealer.getLastCard().flip();
-    qDebug() << dealer.getLastCard().cardToString();
-    if(dealer.getLastCard().isFaceUp)
-    {
-        qDebug() << dealer.getLastCard().cardToString();
-        qDebug() << "IsFaceUp";
-    }
-
-
 }
 
 void Game::hit()
@@ -64,9 +49,11 @@ void Game::dealCard(Player &_player)
 void Game::addWinnings()
 {
     balance+=2*bet;
+    balance = std::round(balance * 10) / 10.0;
 }
 
 void Game::takeBet()
 {
     balance-=bet;
+    balance = std::round(balance * 10) / 10.0;
 }
