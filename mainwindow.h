@@ -12,6 +12,7 @@
 #include <QStyle>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -49,16 +50,17 @@ private slots:
 
     void on_mutePushButton_clicked();
 
+    void on_actionRefresh_balance_triggered();
+
 private:
 
     Ui::MainWindow *ui;
-    QString defaultFolderPath = "C:/Users/Eugene/Documents/QT Projects/DCTTest/Resources/Skins/DefaultSkins/";
-    QString backgroundMusicPath = "C:/Users/Eugene/Documents/QT Projects/DCTTest/Resources/Sounds/backgroundMusic.mp3";
+    const QString defaultFolderPath = "C:/Users/Eugene/Documents/QT Projects/DCTTest/Resources/Skins/DefaultSkins/";
+    const QString soundsPath = "C:/Users/Eugene/Documents/QT Projects/DCTTest/Resources/Sounds/";
     Game game;
     QLabel *flipCardLabel;
-    QMediaPlayer *mediaPlayer = new QMediaPlayer();
     QAudioOutput *audioOutput = new QAudioOutput();
-
+    QMediaPlayer* mpButtonSound = new QMediaPlayer();
     void updateUI();
     void resetGame();
     void updatePlayerDealerScore();
@@ -71,6 +73,11 @@ private:
     QPropertyAnimation* createCardAnim(QLabel *cardLabel, QPoint startPos, QPoint &endPos);
     void setUiVisible();
     void setBackgroundMusic();
+    void shuffleDeckWithSound();
+    void printCardsSound();
+    void setSoundOnButtonClick();
+    void connectAllButtons();
+    void playButtonSound();
 
 
 

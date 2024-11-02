@@ -9,7 +9,6 @@ void Game::start()
 {
     player.reset();
     dealer.reset();
-    deck.shuffle();
     takeBet();
     dealCard(player);
     dealCard(player);
@@ -60,6 +59,11 @@ void Game::takeBet()
 {
     balance-=bet;
     balance = std::round(balance * 10) / 10.0;
+}
+
+void Game::setBalance(float newBalance)
+{
+    balance = newBalance;
 }
 
 QString Game::getImageFolderPath() const

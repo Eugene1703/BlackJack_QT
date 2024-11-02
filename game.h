@@ -24,6 +24,7 @@ public:
     QString imageFolderPath;
     QString getImageFolderPath() const;
     void setImageFolderPath(const QString &newImageFolderPath);
+    void setBalance(float newBalance);
 };
 
 #endif // GAME_H

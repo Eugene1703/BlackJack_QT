@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+
 {
 
     ui->setupUi(this);
@@ -16,10 +17,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->mutePushButton->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
     ui->horizontalSlider->setMinimum(0);
     ui->horizontalSlider->setMaximum(100);
-    ui->horizontalSlider->setValue(30);
+    ui->horizontalSlider->setValue(10);
     updateBet();
     updateBalance();
     setBackgroundMusic();
+    connectAllButtons();
+    setSoundOnButtonClick();
+
 }
 
 
@@ -86,6 +90,7 @@ void MainWindow::printCards()
         endPos+= QPoint(40,0);
     }
     group->start(QAbstractAnimation::DeleteWhenStopped);
+    printCardsSound();
 }
 
 QPropertyAnimation* MainWindow::addCardToLayout(QLayout *layout, Card card, QPoint &startPos, QPoint &endPos)
@@ -102,7 +107,6 @@ QPropertyAnimation* MainWindow::addCardToLayout(QLayout *layout, Card card, QPoi
         flipCardLabel = cardLabel;
         imagePath = card.imageFolderPath + card.backName + ".png";
     }
-    qDebug() << imagePath;
     QPixmap pixmap(imagePath);
     if (!pixmap.isNull())
     {
@@ -120,6 +124,7 @@ QPropertyAnimation* MainWindow::addCardToLayout(QLayout *layout, Card card, QPoi
 
 QPropertyAnimation* MainWindow::createCardAnim(QLabel *cardLabel, QPoint startPos, QPoint &endPos)
 {
+    printCardsSound();
     QPropertyAnimation *animation = new QPropertyAnimation(cardLabel, "pos");
     animation->setDuration(500);
     animation->setStartValue(startPos);
@@ -153,9 +158,56 @@ void MainWindow::setUiVisible()
 
 void MainWindow::setBackgroundMusic()
 {
-    mediaPlayer->setAudioOutput(audioOutput);
-    mediaPlayer->setSource(QUrl::fromLocalFile(backgroundMusicPath));
-    mediaPlayer->play();
+    QMediaPlayer *mp= new QMediaPlayer();
+    mp->setAudioOutput(audioOutput);
+    mp->setSource(QUrl::fromLocalFile(soundsPath+"backgroundMusic.mp3"));
+    mp->setLoops(QMediaPlayer::Infinite);
+    mp->play();
+
+}
+
+void MainWindow::shuffleDeckWithSound()
+{
+    game.deck.shuffle();
+    QMediaPlayer *mp = new QMediaPlayer();
+    QAudioOutput *ao = new QAudioOutput();
+    ao->setVolume(1);
+    mp->setAudioOutput(ao);
+    mp->setSource(QUrl::fromLocalFile(soundsPath+"cardsShufflingSound.mp3"));
+    mp->play();
+}
+
+void MainWindow::printCardsSound()
+{
+    QMediaPlayer *mp = new QMediaPlayer();
+    QAudioOutput *ao = new QAudioOutput();
+    ao->setVolume(1);
+    mp->setAudioOutput(ao);
+    mp->setSource(QUrl::fromLocalFile(soundsPath+"dealCardSound.mp3"));
+    mp->play();
+}
+
+void MainWindow::setSoundOnButtonClick()
+{
+
+    QAudioOutput* ao = new QAudioOutput();
+    ao->setVolume(1);
+    mpButtonSound->setAudioOutput(ao);
+    mpButtonSound->setSource(QUrl::fromLocalFile(soundsPath+"buttonPressedSound.mp3"));
+
+}
+
+void MainWindow::connectAllButtons()
+{
+    const auto buttons = this->findChildren<QPushButton *>();
+    for (QPushButton *button : buttons) {
+        connect(button, &QPushButton::clicked, this, &MainWindow::playButtonSound);
+    }
+}
+
+void MainWindow::playButtonSound()
+{
+    mpButtonSound->play();
 }
 
 void MainWindow::clearLayout(QLayout *layout)
@@ -273,8 +325,9 @@ void MainWindow::on_playPushButton_clicked()
 {
     if(game.balance>=game.bet)
     {
-        game.start();
+        shuffleDeckWithSound();
         setUiVisible();
+        game.start();
         updatePlayerDealerScore();
         updateUI();
         printCards();
@@ -314,5 +367,18 @@ void MainWindow::on_mutePushButton_clicked()
         ui->mutePushButton->setIcon(style()->standardIcon(QStyle::SP_MediaVolumeMuted));
     }
     else ui->mutePushButton->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
+}
+
+
+void MainWindow::on_MutePushButton_clicked()
+{
+
+}
+
+
+void MainWindow::on_actionRefresh_balance_triggered()
+{
+    game.setBalance(100.0);
+    updateBalance();
 }
 
