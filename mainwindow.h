@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include <QFileDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -37,9 +38,12 @@ private slots:
 
     void on_playPushButton_clicked();
 
+    void on_actionChange_skins_triggered();
+
 private:
 
     Ui::MainWindow *ui;
+    QString defaultFolderPath = "C:/Users/Eugene/Documents/QT Projects/DCTTest/Resources/Skins/DefaultSkins/";
     Game game;
     QLabel *flipCardLabel;
     void updateUI();
@@ -53,6 +57,8 @@ private:
     void removeFlipCardFromLayout();
     QPropertyAnimation* createCardAnim(QLabel *cardLabel, QPoint startPos, QPoint &endPos);
     void setUiVisible();
+
+
 
 
 

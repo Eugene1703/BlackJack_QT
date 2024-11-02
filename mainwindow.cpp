@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->standPushButton->setVisible(false);
     ui->playerTextEdit->setVisible(false);
     ui->dealerTextEdit->setVisible(false);
+    game.setImageFolderPath(defaultFolderPath);
     updateBet();
     updateBalance();
 }
@@ -96,6 +97,7 @@ QPropertyAnimation* MainWindow::addCardToLayout(QLayout *layout, Card card, QPoi
         flipCardLabel = cardLabel;
         imagePath = card.imageFolderPath + card.backName + ".png";
     }
+    qDebug() << imagePath;
     QPixmap pixmap(imagePath);
     if (!pixmap.isNull())
     {
@@ -270,5 +272,18 @@ void MainWindow::on_playPushButton_clicked()
         QMessageBox::warning(this,"Information","Not enough balance");
     }
 
+}
+
+
+void MainWindow::on_actionChange_skins_triggered()
+{
+    QString folderPath = QFileDialog::getExistingDirectory(nullptr,"Select the skins folder");
+    if(folderPath.isEmpty())
+    {
+        QMessageBox::information(this,"Information","The folder doesn't exist");
+        return;
+    }
+    folderPath+="/";
+    game.setImageFolderPath(folderPath);
 }
 

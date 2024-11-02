@@ -8,7 +8,7 @@ class Deck
 public:
     Deck();
     QVector<Card> deck;
-    void generate();
+    void generate(QString imageFolderPath);
     void shuffle();
     Card dealCard();
 private:

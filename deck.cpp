@@ -2,7 +2,7 @@
 
 Deck::Deck() {}
 
-void Deck::generate()
+void Deck::generate(QString imageFolderPath)
 {
     deck.clear();
     for(int suit=Hearts;suit<=Spades;suit++)
@@ -10,6 +10,7 @@ void Deck::generate()
         for(int rank=Two;rank<=King;rank++)
         {
             Card card(static_cast<Rank>(rank), static_cast<Suit>(suit));
+            card.setImageFolderPath(imageFolderPath);
             deck.push_back(card);
         }
     }

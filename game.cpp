@@ -1,17 +1,21 @@
 #include "game.h"
 
-Game::Game() {}
+Game::Game()
+{
+
+}
 
 void Game::start()
 {
     player.reset();
     dealer.reset();
-    deck.generate();
     deck.shuffle();
     takeBet();
     dealCard(player);
     dealCard(player);
     dealCard(dealer);
+    dealCard(dealer);
+    dealer.getLastCard().flip();
 }
 
 void Game::hit()
@@ -56,4 +60,15 @@ void Game::takeBet()
 {
     balance-=bet;
     balance = std::round(balance * 10) / 10.0;
+}
+
+QString Game::getImageFolderPath() const
+{
+    return imageFolderPath;
+}
+
+void Game::setImageFolderPath(const QString &newImageFolderPath)
+{
+    imageFolderPath = newImageFolderPath;
+    deck.generate(imageFolderPath);
 }

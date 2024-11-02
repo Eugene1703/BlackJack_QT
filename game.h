@@ -21,6 +21,9 @@ public:
     float balance=100.0, bet=0.1, minBet=0.1, maxBet=10, betStep=0.1;
     bool isPlayer = true;
     int scoreLimit = 21;
+    QString imageFolderPath;
+    QString getImageFolderPath() const;
+    void setImageFolderPath(const QString &newImageFolderPath);
 };
 
 #endif // GAME_H
