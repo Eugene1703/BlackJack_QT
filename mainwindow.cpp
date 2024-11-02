@@ -13,8 +13,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->playerTextEdit->setVisible(false);
     ui->dealerTextEdit->setVisible(false);
     game.setImageFolderPath(defaultFolderPath);
+    ui->mutePushButton->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
+    ui->horizontalSlider->setMinimum(0);
+    ui->horizontalSlider->setMaximum(100);
+    ui->horizontalSlider->setValue(30);
     updateBet();
     updateBalance();
+    setBackgroundMusic();
 }
 
 
@@ -144,6 +149,13 @@ void MainWindow::setUiVisible()
         element->setVisible(!element->isVisible());
     }
 
+}
+
+void MainWindow::setBackgroundMusic()
+{
+    mediaPlayer->setAudioOutput(audioOutput);
+    mediaPlayer->setSource(QUrl::fromLocalFile(backgroundMusicPath));
+    mediaPlayer->play();
 }
 
 void MainWindow::clearLayout(QLayout *layout)
@@ -285,5 +297,22 @@ void MainWindow::on_actionChange_skins_triggered()
     }
     folderPath+="/";
     game.setImageFolderPath(folderPath);
+}
+
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    float volume = value/100.0;
+    audioOutput->setVolume(volume);
+}
+
+void MainWindow::on_mutePushButton_clicked()
+{
+    audioOutput->setMuted(!audioOutput->isMuted());
+    if(audioOutput->isMuted())
+    {
+        ui->mutePushButton->setIcon(style()->standardIcon(QStyle::SP_MediaVolumeMuted));
+    }
+    else ui->mutePushButton->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
 }
 

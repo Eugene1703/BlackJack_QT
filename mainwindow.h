@@ -9,6 +9,9 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QFileDialog>
+#include <QStyle>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -40,12 +43,22 @@ private slots:
 
     void on_actionChange_skins_triggered();
 
+    void on_horizontalSlider_valueChanged(int value);
+
+    void on_MutePushButton_clicked();
+
+    void on_mutePushButton_clicked();
+
 private:
 
     Ui::MainWindow *ui;
     QString defaultFolderPath = "C:/Users/Eugene/Documents/QT Projects/DCTTest/Resources/Skins/DefaultSkins/";
+    QString backgroundMusicPath = "C:/Users/Eugene/Documents/QT Projects/DCTTest/Resources/Sounds/backgroundMusic.mp3";
     Game game;
     QLabel *flipCardLabel;
+    QMediaPlayer *mediaPlayer = new QMediaPlayer();
+    QAudioOutput *audioOutput = new QAudioOutput();
+
     void updateUI();
     void resetGame();
     void updatePlayerDealerScore();
@@ -57,6 +70,8 @@ private:
     void removeFlipCardFromLayout();
     QPropertyAnimation* createCardAnim(QLabel *cardLabel, QPoint startPos, QPoint &endPos);
     void setUiVisible();
+    void setBackgroundMusic();
+
 
 
 

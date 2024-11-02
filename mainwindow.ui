@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>877</width>
-    <height>661</height>
+    <width>1122</width>
+    <height>740</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,27 +44,27 @@
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>240</y>
+      <y>220</y>
       <width>104</width>
-      <height>71</height>
+      <height>21</height>
      </rect>
     </property>
    </widget>
    <widget class="QTextEdit" name="dealerTextEdit">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>240</y>
+      <x>580</x>
+      <y>220</y>
       <width>104</width>
-      <height>71</height>
+      <height>21</height>
      </rect>
     </property>
    </widget>
    <widget class="QTextEdit" name="betTextEdit">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>410</y>
+      <x>590</x>
+      <y>350</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -73,8 +73,8 @@
    <widget class="QPushButton" name="increasBetPushButton">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>450</y>
+      <x>560</x>
+      <y>390</y>
       <width>75</width>
       <height>24</height>
      </rect>
@@ -86,8 +86,8 @@
    <widget class="QPushButton" name="decreaseBetPushButton">
     <property name="geometry">
      <rect>
-      <x>750</x>
-      <y>450</y>
+      <x>650</x>
+      <y>390</y>
       <width>75</width>
       <height>24</height>
      </rect>
@@ -99,8 +99,8 @@
    <widget class="QTextEdit" name="balanceTextEdit">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>360</y>
+      <x>590</x>
+      <y>300</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -109,8 +109,8 @@
    <widget class="QLineEdit" name="betInsertLineEdit">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>500</y>
+      <x>590</x>
+      <y>440</y>
       <width>113</width>
       <height>22</height>
      </rect>
@@ -119,8 +119,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>480</y>
+      <x>600</x>
+      <y>420</y>
       <width>101</width>
       <height>16</height>
      </rect>
@@ -167,8 +167,8 @@
    <widget class="QLabel" name="balanceLabel">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>330</y>
+      <x>610</x>
+      <y>270</y>
       <width>49</width>
       <height>16</height>
      </rect>
@@ -180,8 +180,8 @@
    <widget class="QLabel" name="betTextLabel">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>390</y>
+      <x>610</x>
+      <y>330</y>
       <width>49</width>
       <height>16</height>
      </rect>
@@ -190,13 +190,39 @@
      <string>Bet</string>
     </property>
    </widget>
+   <widget class="QSlider" name="horizontalSlider">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>520</y>
+      <width>61</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="mutePushButton">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>520</y>
+      <width>31</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>877</width>
+     <width>1122</width>
      <height>22</height>
     </rect>
    </property>
